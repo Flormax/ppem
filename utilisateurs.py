@@ -1,22 +1,17 @@
 #!C:/python27/python.exe
 
 import cgi
-#import MySQLdb
-import _mysql
+import MySQLdb
 import sys
 
-#MySQLdb.connect("HOST", "USER", "PASS", "TABLE")
-#db=MySQLdb.connect(host="localhost", port=3306, user="admin", passwd="admin", db="utilisateurs")
-
-
-#db = MySQLdb.connect("localhost", "admin", "admin", "utilisateurs")
+db = MySQLdb.connect("localhost", "toto", "", "utilisateurs")
 
 def dismoitout(requete):
     try:
         cursor = db.cursor()
         cursor.execute(requete)
         db.commit()
-    except _mysql.Error, e:
+    except MySQLdb.Error, e:
         print "Content-Type: text/html\n"
         print "<html>"
         print "<body>"
@@ -28,20 +23,19 @@ def dismoitout(requete):
 
 def connectionToHost():
     try:
-        db = _mysql.connect('localhost', 'toto', '', 'utilisateurs')
-            
-        db.query("SELECT VERSION()")
-        result = db.use_result()
+        db = MySQLdb.connect("localhost", "toto", "", "utilisateurs")
+        cursor = db.cursor()
+        cursor.execute("SELECT VERSION()")
 
         print "Content-Type: text/html\n"
         print "<html>"
         print "<body>"
         print "MySQL version: %s" % \
-            result.fetch_row()[0]
+            cursor.fetchone()
         print "</body>"
         print "</html>"
         
-    except _mysql.Error, e:
+    except MySQLdb.Error, e:
         print "Content-Type: text/html\n"
         print "<html>"
         print "<body>"
@@ -88,13 +82,13 @@ def editUtilisateur():
         htmlForm += '<input type="submit" value="Ajouter" />'
     print (htmlForm)
 
-def deleteUtilisateur():
+'''def deleteUtilisateur():
     if action == 'Supprimer':
         uid = form.getvalue('id')
         sql = "DELETE FROM utilisateur WHERE not(admin) and id = " + uid
         cursor = db.cursor()
         cursor.execute(sql)
-        db.commit()
+        db.commit()'''
         
 def insertUtilisateur():
     if action == 'Ajouter' or action == "EnregistrerModification":
@@ -108,7 +102,9 @@ def insertUtilisateur():
                 + nom + "', '" \
                 + prenom + "', '" \
                 + email + "');"
-        dismoitout()
+        cursor = db.cursor()
+        cursor.execute(sql)
+        db.commit()
           
         #else
             #uid  = form.getvalue('id')
@@ -148,6 +144,6 @@ action = form.getvalue('action')
 printHead()
 editUtilisateur()
 insertUtilisateur()
-deleteUtilisateur()
+#deleteUtilisateur()
 printUtilisateurs()
 db.close()
