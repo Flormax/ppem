@@ -1,0 +1,134 @@
+body {
+	background-color: #FFFAE7;
+
+	width: 100%;
+	margin: 0 auto;
+	padding: 0;
+	
+	text-align: center;
+}
+
+header {
+	background-color: #DEDDD8;
+}
+
+header div {
+	width: 50%;
+	display: inline-block;
+}
+
+.bienvenue p {
+	text-align: left;
+	padding-left: 20px;
+}
+
+.boutons {
+	text-align: right;
+}
+
+.boutons a {
+	padding-right: 20px;
+}
+
+h1 {
+	font-size: 2.3em;
+}
+
+h2 {
+	font-size: 1.8em;
+	margin: 0;
+	padding: 10px;
+}
+
+section div {
+	background-color: #DEDDD8;
+	width: 70%;
+	margin: auto;
+	border-radius: 10px;
+}
+
+section a {
+	margin: 5px;
+}
+
+input {
+	width: 200px;
+	height: 30px;
+	margin: 10px;
+}
+
+#auto {
+	width: 0;
+	height: 0;
+}
+
+table {
+	margin: auto;
+	border-collapse: collapse;
+	width: 70%;
+}
+
+th, td {
+	padding: 8px;
+	border-bottom: 1px solid #FFFFFF;
+}
+
+th {
+	border-top: 2px solid;
+	background-color: #61689C;
+	color: #FFFFFF;
+}
+
+tbody tr {
+	background-color: #E1E2EC;
+}
+
+tbody tr:hover {
+	background-color: #A0A4C4;
+	transition:0.5s;
+}
+
+@media screen and (max-width: 600px) {
+	table, thead, tbody, th, td, tr { 
+		display: block; 
+	}
+
+	table {
+		width: 100%;
+	}
+		
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+		
+	tr { 
+		border: 1px solid #ccc; 
+	}
+		
+	td { 
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 40%; 
+	}
+		
+	td:before { 
+		position: absolute;
+		left: 5px;
+		width: 35%; 
+	}
+		
+	td:nth-of-type(1):before { content: "Nom"; }
+	td:nth-of-type(2):before { content: "Prénom"; }
+	td:nth-of-type(3):before { content: "Email"; }
+	td:nth-of-type(4):before { content: "Admin"; }
+	td:nth-of-type(5):before { content: "Suppression"; }
+	td:nth-of-type(6):before { content: "Modification"; }
+}
+
+@media screen and (max-width: 420px) {
+	section a {
+		display: block;
+	}
+}
