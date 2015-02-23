@@ -1,6 +1,8 @@
 #!C:/python27/python.exe
 # -*- coding: utf-8 -*-
 
+#LE LONG ETAIT ICI
+
 import cgi
 import cgitb
 cgitb.enable()
