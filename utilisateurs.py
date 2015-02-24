@@ -17,8 +17,8 @@ def printHead():
     <html lang="fr">
 
     <head>
-        <meta charset=\"UTF-8\">
-        <link href=\"http://localhost/ppem/css/style.css\" rel=\"stylesheet\">
+        <meta charset="UTF-8">
+        <link href="http://localhost/ppem/css/style.css" rel="stylesheet">
         <title>Gestion des utilisateurs</title>
     </head>
 
@@ -43,6 +43,7 @@ def printHeader():
 def printFooter():
     print '''
     </section>
+    <script src="http://localhost/ppem/js/controlForm.js"></script>
     </body>
     </html>
     '''
@@ -57,16 +58,16 @@ def pageConnexion():
 	formConnexion = '<form action="utilisateur.py" method="post">' \
 		+ '<input type="hidden" name="action" value="' + nextAction + '">'
 	if nextAction == 'Connexion':
-		formConnexion += '<input type="text" name="email" placeholder="Votre email"><br>' \
-			+ '<input type="password" name="mdp" placeholder="Votre mot de passe"><br>' \
+		formConnexion += '<input type="email" name="email" id="email" placeholder="Votre email"><span class="erreur"></span><br>' \
+			+ '<input type="password" name="mdp" id="mdp" placeholder="Votre mot de passe"><span class="erreur"></span><br>' \
 			+ '<input type="checkbox" name="auto" id="auto"><label for="auto">Connexion automatique</label><br>' \
 			+ '<input type="submit" value="Se connecter"><br>' \
 			+ '<a href="utilisateurs.py" title="Mot de passe oublié">J\'ai oublié mon mot de passe</a><br>' \
 			+ '<a href="utilisateurs.py?action=nonInscrit" title="Création de compte">Je n\'ai pas de compte</a>'
 	else:
-		formConnexion += '<input type="text" name="nom" placeholder="Votre nom"><br>' \
-			+ '<input type="text" name="prenom" placeholder="Votre prénom"><br>' \
-			+ '<input type="text" name="email" placeholder="Votre email"><br>' \
+		formConnexion += '<input type="text" name="nom" id="nom" placeholder="Votre nom"><span class="erreur"></span><br>' \
+			+ '<input type="text" name="prenom" id="prenom" placeholder="Votre prénom"><span class="erreur"></span><br>' \
+			+ '<input type="email" name="email" id="email" placeholder="Votre email"><span class="erreur"></span><br>' \
 			+ '<input type="submit" value="S\'inscrire"><br>' \
 			+ '<a href="utilisateurs.py?action=inscrit" title="Connexion">J\'ai déjà un compte</a>'
 	formConnexion += '</form>'
@@ -95,12 +96,12 @@ def pageUtilisateur():
 	formUtilisateur = '<form action="utilisateur.py" method="post">' \
 		+ '<input type="hidden" name="action" value="' + nextAction + '">'
 	if nextAction == 'ModifEmail':
-		formUtilisateur += '<input type="text" name="emailAvt" placeholder="Votre email actuel"><br>' \
-		+ '<input type="text" name="emailApr" placeholder="Votre nouvel email"><br>' \
+		formUtilisateur += '<input type="email" name="emailAvt" id="emailAvt" placeholder="Votre nouvel email"><span class="erreur"></span><br>' \
+		+ '<input type="email" name="emailApr" id="emailApr" placeholder="Confirmez votre email"><span class="erreur"></span><br>' \
 		+ '<input type="submit" value="Modifier">'
 	else:
-		formUtilisateur += '<input type="password" name="mdpAvt" placeholder="Votre nouveau mot de passe"><br>' \
-		+ '<input type="password" name="mdpApr" placeholder="Confirmez votre mot de passe"><br>' \
+		formUtilisateur += '<input type="password" name="mdpAvt" id="mdpAvt" placeholder="Votre nouveau mot de passe"><span class="erreur"></span><br>' \
+		+ '<input type="password" name="mdpApr" id="mdpApr" placeholder="Confirmez votre mot de passe"><span class="erreur"></span><br>' \
 		+ '<input type="submit" value="Modifier">'
 	formUtilisateur += '</form>'
 	print '<h1>Mes informations</h1>'
@@ -133,9 +134,9 @@ def editUtilisateur():
         email = ''
         nextAction = 'Ajouter'
     htmlForm = '<form action="utilisateurs.py" method="post">' \
-        + '<input type="text" name="nom" placeholder="Nom" value="' + str(nom) + '"/><br>' \
-        + '<input type="text" name="prenom" placeholder="Prénom" value="' + str(prenom) + '"/><br>' \
-        + '<input type="text" name="email" placeholder="Email" value="' + str(email) + '"/><br>' \
+        + '<input type="text" name="nom" id="nom" placeholder="Nom" value="' + str(nom) + '"/><span class="erreur"></span><br>' \
+        + '<input type="text" name="prenom" id="prenom" placeholder="Prénom" value="' + str(prenom) + '"/><span class="erreur"></span><br>' \
+        + '<input type="email" name="email" id="email" placeholder="Email" value="' + str(email) + '"/><span class="erreur"></span><br>' \
         + '<input type="hidden" name="action" value="' + nextAction + '"/>'
     if nextAction == 'EnregistrerModification':
         htmlForm += '<input type="hidden" name="id" value="' + uid + '"/>' \
