@@ -8,6 +8,41 @@ body {
 	text-align: center;
 }
 
+a, a:visited {
+	color: #362819;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 1.2em;
+	margin: 5px;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+h1 {
+	font-size: 2.3em;
+}
+
+h2 {
+	font-size: 1.8em;
+	margin: 20px;
+}
+
+h1, h2, h3 {
+	text-shadow: 2px 3px 2px #B0B0B0;
+}
+
+li {
+	list-style-type: none;
+}
+
+ul {
+	padding: 0;
+}
+
+										/* HEADER */
+
 header {
 	background-color: #DEDDD8;
 }
@@ -20,24 +55,28 @@ header div {
 .bienvenue p {
 	text-align: left;
 	padding-left: 20px;
+	font-weight: bold;
 }
 
-.boutons {
+.boutons li {
+	display: inline-block;
+	text-decoration: none;
+	padding: 0px 10px;
+}
+
+.boutons ul {
 	text-align: right;
+	margin: 0px 20px;
 }
 
-.boutons a {
-	padding-right: 20px;
-}
 
-h1 {
-	font-size: 2.3em;
-}
 
-h2 {
-	font-size: 1.8em;
-	margin: 0;
-	padding: 10px;
+
+
+										/* SECTION */
+
+.page-utilisateur form {
+	margin-top: 20px;
 }
 
 section div {
@@ -45,10 +84,21 @@ section div {
 	width: 70%;
 	margin: auto;
 	border-radius: 10px;
+	box-shadow: 2px 2px 10px #878787;
+	padding: 10px 0px;
 }
 
-section a {
-	margin: 5px;
+label {
+	display: block;
+}
+
+.auto {
+	display: inline;
+}
+
+.parsley-errors-list li {
+	font-weight: bold;
+	color : #CF0000;
 }
 
 input {
@@ -75,18 +125,21 @@ th, td {
 
 th {
 	border-top: 2px solid;
-	background-color: #61689C;
+	background-color: #898988;
 	color: #FFFFFF;
 }
 
 tbody tr {
-	background-color: #E1E2EC;
+	background-color: #E6E1D0;
 }
 
 tbody tr:hover {
-	background-color: #A0A4C4;
+	background-color: #A19E92;
+	color: #FFFFFF;
 	transition:0.5s;
 }
+
+										/* RESPONSIVE */
 
 @media screen and (max-width: 600px) {
 	table, thead, tbody, th, td, tr { 

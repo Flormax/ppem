@@ -32,18 +32,24 @@ def printHeader():
             <p>Bienvenue ...</p>
         </div><!--
      --><div class="boutons">
-            <a href="utilisateurs.py?action=deconnexion" title="Déconnexion">Se déconnecter</a>
-            <a href="utilisateurs.py?action=aide" title="Documentation">Aide</a>
+            <ul>
+                 <li><a href="utilisateurs.py?action=deconnexion" title="Déconnexion">Déconnexion</a>
+                 <li><a href="utilisateurs.py?action=aide" title="Documentation">Aide</a>
+            </ul>
         </div> 
     </header>
     <section>
     '''
-   #Deconnexion et Bienvenue seulement si différent de page de connexion
 
 def printFooter():
     print '''
     </section>
-    <script src="http://localhost/ppem/js/controlForm.js"></script>
+    <script src="http://localhost/ppem/js/jquery.js"></script>
+    <script src="http://localhost/ppem/js/parsley.js"></script>
+    <script>
+        $('form').parsley();
+    </script>
+        
     </body>
     </html>
     '''
@@ -55,19 +61,19 @@ def pageConnexion():
 	else:
 		nextAction = 'Connexion'
 		h2 = '<h2>Se connecter</h2>'
-	formConnexion = '<form action="utilisateur.py" method="post">' \
+	formConnexion = '<form action="utilisateurs.py" method="post">' \
 		+ '<input type="hidden" name="action" value="' + nextAction + '">'
 	if nextAction == 'Connexion':
-		formConnexion += '<input type="email" name="email" id="email" placeholder="Votre email"><span class="erreur"></span><br>' \
-			+ '<input type="password" name="mdp" id="mdp" placeholder="Votre mot de passe"><span class="erreur"></span><br>' \
-			+ '<input type="checkbox" name="auto" id="auto"><label for="auto">Connexion automatique</label><br>' \
+		formConnexion += '<label for="email">Votre email</label><input type="email" name="email" id="email" placeholder="Email" required><span class="erreur"></span><br>' \
+			+ '<label for="mdp">Votre mot de passe</label><input type="password" name="mdp" id="mdp" placeholder="Votre mot de passe" required><span class="erreur"></span><br>' \
+			+ '<input type="checkbox" name="auto" id="auto"><label for="auto" class="auto">Connexion automatique</label><br>' \
 			+ '<input type="submit" value="Se connecter"><br>' \
-			+ '<a href="utilisateurs.py" title="Mot de passe oublié">J\'ai oublié mon mot de passe</a><br>' \
+			+ '<a href="utilisateurs.py?action=oublie" title="Mot de passe oublié">J\'ai oublié mon mot de passe</a><br>' \
 			+ '<a href="utilisateurs.py?action=nonInscrit" title="Création de compte">Je n\'ai pas de compte</a>'
 	else:
-		formConnexion += '<input type="text" name="nom" id="nom" placeholder="Votre nom"><span class="erreur"></span><br>' \
-			+ '<input type="text" name="prenom" id="prenom" placeholder="Votre prénom"><span class="erreur"></span><br>' \
-			+ '<input type="email" name="email" id="email" placeholder="Votre email"><span class="erreur"></span><br>' \
+		formConnexion += '<label for="nom">Votre nom</label><input type="text" name="nom" id="nom" placeholder="Nom" required><span class="erreur"></span><br>' \
+			+ '<label for="prenom">Votre prénom</label><input type="text" name="prenom" id="prenom" placeholder="Prénom" required><span class="erreur"></span><br>' \
+			+ '<label for="email">Votre email</label><input type="email" name="email" id="email" placeholder="Email" required><span class="erreur"></span><br>' \
 			+ '<input type="submit" value="S\'inscrire"><br>' \
 			+ '<a href="utilisateurs.py?action=inscrit" title="Connexion">J\'ai déjà un compte</a>'
 	formConnexion += '</form>'
@@ -77,15 +83,6 @@ def pageConnexion():
 	print (formConnexion)
 	print '</div>'
 
-#def connexion():
-	# Traitement du formulaire de connexion avec BDD
-	# Création des sessions nécessaires
-	# Création des cookies si connexion auto
-
-#def deconnexion():
-
-#def inscription():
-
 def pageUtilisateur():
 	if action == 'modifMdp':
 		nextAction = 'ModifMdp'
@@ -93,28 +90,24 @@ def pageUtilisateur():
 	else:
 		nextAction = 'ModifEmail'
 		h2 = '<h2>Modifier mon email</h2>'
-	formUtilisateur = '<form action="utilisateur.py" method="post">' \
+	formUtilisateur = '<form action="utilisateurs.py" method="post">' \
 		+ '<input type="hidden" name="action" value="' + nextAction + '">'
 	if nextAction == 'ModifEmail':
-		formUtilisateur += '<input type="email" name="emailAvt" id="emailAvt" placeholder="Votre nouvel email"><span class="erreur"></span><br>' \
-		+ '<input type="email" name="emailApr" id="emailApr" placeholder="Confirmez votre email"><span class="erreur"></span><br>' \
+		formUtilisateur += '<label for="emailAvt">Votre nouvel email</label><input type="email" name="emailAvt" id="emailAvt" placeholder="Nouvel email" required><span class="erreur"></span><br>' \
+		+ '<label for="emailApr">Confirmez le nouvel email</label><input type="email" name="emailApr" id="emailApr" placeholder="Confirmez" data-parsley-equalto="#emailAvt" required><span class="erreur"></span><br>' \
 		+ '<input type="submit" value="Modifier">'
 	else:
-		formUtilisateur += '<input type="password" name="mdpAvt" id="mdpAvt" placeholder="Votre nouveau mot de passe"><span class="erreur"></span><br>' \
-		+ '<input type="password" name="mdpApr" id="mdpApr" placeholder="Confirmez votre mot de passe"><span class="erreur"></span><br>' \
+		formUtilisateur += '<label for="mdpAvt">Votre nouveau mot de passe</label><input type="password" name="mdpAvt" id="mdpAvt" placeholder="Nouveau mot de passe" required><span class="erreur"></span><br>' \
+		+ '<label for="mdpApr">Confirmez le nouveau mot de passe</label><input type="password" name="mdpApr" id="mdpApr" placeholder="Confirmez" data-parsley-equalto="#mdpAvt" required><span class="erreur"></span><br>' \
 		+ '<input type="submit" value="Modifier">'
 	formUtilisateur += '</form>'
 	print '<h1>Mes informations</h1>'
-	print '<div>'
+	print '<div class="page-utilisateur">'
 	print (h2)
 	print '<a href="utilisateurs.py?action=modifEmail" title="Modifier son email">Modifier l\'email</a>'
 	print '<a href="utilisateurs.py?action=modifMdp" title="Modifier son mot de passe">Modifier le mot de passe</a>'
 	print (formUtilisateur)
 	print '</div>'
-
-#def modifMail():
-
-#def modifMdp():
 
 def editUtilisateur():
     if action == 'Modifier':
@@ -134,9 +127,9 @@ def editUtilisateur():
         email = ''
         nextAction = 'Ajouter'
     htmlForm = '<form action="utilisateurs.py" method="post">' \
-        + '<input type="text" name="nom" id="nom" placeholder="Nom" value="' + str(nom) + '"/><span class="erreur"></span><br>' \
-        + '<input type="text" name="prenom" id="prenom" placeholder="Prénom" value="' + str(prenom) + '"/><span class="erreur"></span><br>' \
-        + '<input type="email" name="email" id="email" placeholder="Email" value="' + str(email) + '"/><span class="erreur"></span><br>' \
+        + '<label for="nom">Nom</label><input type="text" name="nom" id="nom" placeholder="Nom" value="' + str(nom) + '"/ required><span class="erreur"></span><br>' \
+        + '<label for="prenom">Prénom</label><input type="text" name="prenom" id="prenom" placeholder="Prénom" value="' + str(prenom) + '"/ required><span class="erreur"></span><br>' \
+        + '<label for="email">Email</label><input type="email" name="email" id="email" placeholder="Email" value="' + str(email) + '"/ required><span class="erreur"></span><br>' \
         + '<input type="hidden" name="action" value="' + nextAction + '"/>'
     if nextAction == 'EnregistrerModification':
         htmlForm += '<input type="hidden" name="id" value="' + uid + '"/>' \
@@ -213,8 +206,7 @@ printHead()
 printHeader()
 
 # Si cookies / sessions vides
-pageConnexion()
-#traitementConnexion()
+#pageConnexion()
 
 #Si session sans droits admin
 #pageUtilisateur()
