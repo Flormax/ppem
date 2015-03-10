@@ -5,65 +5,49 @@ import cgi
 import cgitb
 cgitb.enable()
 import MySQLdb
-import sys
+import sys, os
+import session
+import html
 
+sys.path.append(os.environ['DOCUMENT_ROOT'])
+sess = session.Session(expires=365*24*60*60, cookie_path='/')
 db = MySQLdb.connect("localhost", "toto", "", "utilisateurs")
 
-def printHead():
-    print "Content-Type: text/html"
-    print
-    print '''
-    <!DOCTYPE html>
-    <html lang="fr">
-
-    <head>
-        <meta charset="UTF-8">
-        <link href="http://localhost/ppem/css/style.css" rel="stylesheet">
-        <title>Gestion des utilisateurs</title>
-    </head>
-
-    <body>
-    '''
-
-def printHeader():
-    print '''
-    <header>
-        <div class="bienvenue">
-            <p>Bienvenue ...</p>
-        </div><!--
-     --><div class="boutons">
-            <ul>
-                 <li><a href="utilisateurs.py?action=deconnexion" title="Déconnexion">Déconnexion</a>
-                 <li><a href="utilisateurs.py?action=aide" title="Documentation">Aide</a>
-            </ul>
-        </div> 
-    </header>
-    <section>
-    '''
-
-def printFooter():
-    print '''
-    </section>
-    <script src="http://localhost/ppem/js/jquery.js"></script>
-    <script src="http://localhost/ppem/js/parsley.js"></script>
-    <script>
-        $('form').parsley();
-    </script>
-        
-    </body>
-    </html>
-    '''
+def deconnexion():
+    if action == 'deconnexion':
+        sess.data['connecte'] = False
+        sess.data['admin'] = ''
+        print('Location:utilisateurs.py')
+     
+def connexion():
+    if action == 'connexion':
+        email = form.getvalue('email')
+        mdp = form.getvalue('mdp')
+         
+        if (email == None or mdp == None):
+            return
+        else:
+            sql = "SELECT admin FROM utilisateur WHERE email = '" + email + "' AND mdp = '" + mdp + "';"
+             
+            cursor = db.cursor()
+            cursor.execute(sql)
+            row = cursor.fetchone()
+            if row is not None:
+                sess.data['connecte'] = True
+                sess.data['admin'] = row[0]
+                print('Location:utilisateurs.py')
+                
 
 def pageConnexion():
 	if action == 'nonInscrit':
-		nextAction = 'Inscription'
+		nextAction = 'inscription'
 		h2 = '<h2>S\'inscrire</h2>'
 	else:
-		nextAction = 'Connexion'
+		nextAction = 'connexion'
 		h2 = '<h2>Se connecter</h2>'
 	formConnexion = '<form action="utilisateurs.py" method="post">' \
 		+ '<input type="hidden" name="action" value="' + nextAction + '">'
-	if nextAction == 'Connexion':
+	if nextAction == 'connexion':
 		formConnexion += '<label for="email">Votre email</label><input type="email" name="email" id="email" placeholder="Email" required><span class="erreur"></span><br>' \
 			+ '<label for="mdp">Votre mot de passe</label><input type="password" name="mdp" id="mdp" placeholder="Votre mot de passe" required><span class="erreur"></span><br>' \
 			+ '<input type="checkbox" name="auto" id="auto"><label for="auto" class="auto">Connexion automatique</label><br>' \
@@ -85,14 +69,14 @@ def pageConnexion():
 
 def pageUtilisateur():
 	if action == 'modifMdp':
-		nextAction = 'ModifMdp'
+		nextAction = 'modifMdp'
 		h2 = '<h2>Modifier mon mot de passe</h2>'
 	else:
-		nextAction = 'ModifEmail'
+		nextAction = 'modifEmail'
 		h2 = '<h2>Modifier mon email</h2>'
 	formUtilisateur = '<form action="utilisateurs.py" method="post">' \
 		+ '<input type="hidden" name="action" value="' + nextAction + '">'
-	if nextAction == 'ModifEmail':
+	if nextAction == 'modifEmail':
 		formUtilisateur += '<label for="emailAvt">Votre nouvel email</label><input type="email" name="emailAvt" id="emailAvt" placeholder="Nouvel email" required><span class="erreur"></span><br>' \
 		+ '<label for="emailApr">Confirmez le nouvel email</label><input type="email" name="emailApr" id="emailApr" placeholder="Confirmez" data-parsley-equalto="#emailAvt" required><span class="erreur"></span><br>' \
 		+ '<input type="submit" value="Modifier">'
@@ -110,7 +94,7 @@ def pageUtilisateur():
 	print '</div>'
 
 def editUtilisateur():
-    if action == 'Modifier':
+    if action == 'modifier':
         uid = form.getvalue('id')
         cursor = db.cursor()
         cursor.execute("select * from utilisateur where id = " + str(uid))
@@ -118,20 +102,20 @@ def editUtilisateur():
         nom = row[1]
         prenom = row[2]
         email = row[3]
-        nextAction = 'EnregistrerModification'
+        nextAction = 'enregistrerModification'
         h2 = '<h2>Modifier un utilisateur</h2>'
     else:
     	h2 = '<h2>Ajouter un utilisateur</h2>'
         nom = ''
         prenom = ''
         email = ''
-        nextAction = 'Ajouter'
+        nextAction = 'ajouter'
     htmlForm = '<form action="utilisateurs.py" method="post">' \
         + '<label for="nom">Nom</label><input type="text" name="nom" id="nom" placeholder="Nom" value="' + str(nom) + '"/ required><span class="erreur"></span><br>' \
         + '<label for="prenom">Prénom</label><input type="text" name="prenom" id="prenom" placeholder="Prénom" value="' + str(prenom) + '"/ required><span class="erreur"></span><br>' \
         + '<label for="email">Email</label><input type="email" name="email" id="email" placeholder="Email" value="' + str(email) + '"/ required><span class="erreur"></span><br>' \
         + '<input type="hidden" name="action" value="' + nextAction + '"/>'
-    if nextAction == 'EnregistrerModification':
+    if nextAction == 'enregistrerModification':
         htmlForm += '<input type="hidden" name="id" value="' + uid + '"/>' \
         + '<input type="submit" value="Enregistrer la modification" /><br>' \
         + '<a href="utilisateurs.py" title="Ajouter un utilisateur">Ajouter un utilisateur</a>'       
@@ -145,7 +129,7 @@ def editUtilisateur():
     print '</div>'
 
 def deleteUtilisateur():
-    if action == 'Supprimer':
+    if action == 'supprimer':
         uid = form.getvalue('id')
         sql = "DELETE FROM utilisateur WHERE not(admin) and id = " + uid
         cursor = db.cursor()
@@ -153,22 +137,19 @@ def deleteUtilisateur():
         db.commit()
         
 def insertUtilisateur():
-    if action == 'Ajouter' or action == "EnregistrerModification":
+    if action == 'ajouter' or action == "enregistrerModification":
         nom = form.getvalue('nom')
         prenom = form.getvalue('prenom')
         email = form.getvalue('email')
         if (nom == None or prenom == None or email == None):
             return
-        if action == 'Ajouter' :
+        if action == 'ajouter' :
             sql = "INSERT INTO utilisateur(nom, prenom, email) VALUES ('" \
                 + nom + "', '" \
                 + prenom + "', '" \
                 + email + "');"
-        cursor = db.cursor()
-        cursor.execute(sql)
-        db.commit()
-        '''else:
-            uid  = form.getvalue('id')
+        else:
+            uid = form.getvalue('id')
             sql = "UPDATE utilisateur SET " \
                 + "nom = '" + nom + "', " \
                 + "prenom = '" + prenom + "', " \
@@ -176,7 +157,7 @@ def insertUtilisateur():
                 + "WHERE id = " + str(uid)
 	    cursor = db.cursor()
 	    cursor.execute(sql)
-	    db.commit()'''
+	    db.commit()
     
 def printUtilisateur(row):
     print '<tr><td>' + str(row[1]) + '</td><td>' + str(row[2]) + '</td><td>' + str(row[3]) \
@@ -185,7 +166,7 @@ def printUtilisateur(row):
         print '<td><a href="utilisateurs.py?action=Supprimer&amp;id=' \
             + str(row[0]) + '">Supprimer</a>'
     print "</td><td>" \
-        + '<a href ="utilisateurs.py?action=Modifier&amp;id=' + str(row[0]) \
+        + '<a href ="utilisateurs.py?action=modifier&amp;id=' + str(row[0]) \
         + '">Modifier</a></td></tr>'
 
 def printUtilisateurs():
@@ -198,24 +179,26 @@ def printUtilisateurs():
     for row in cursor.fetchall():
         printUtilisateur(row)
     print("</tbody></table>")
-
-
+    
+connecte = sess.data.get('connecte')
+admin = sess.data.get('admin')
 form = cgi.FieldStorage()
 action = form.getvalue('action')
-printHead()
-printHeader()
+deconnexion()
+connexion()
+html.printHead()
+html.printHeader()
 
-# Si cookies / sessions vides
-#pageConnexion()
-
-#Si session sans droits admin
-#pageUtilisateur()
-
-# Si session avec droits admin
-#editUtilisateur()
-#insertUtilisateur()
-#deleteUtilisateur()
-#printUtilisateurs()
-
-printFooter()
+if connecte and admin:
+    editUtilisateur()
+    insertUtilisateur()
+    deleteUtilisateur()
+    printUtilisateurs()
+elif connecte:
+    pageUtilisateur()
+else:
+    pageConnexion()
+    
+html.printFooter()
 db.close()
+sess.close()
