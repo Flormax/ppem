@@ -25,8 +25,8 @@ def printHeader():
         </div><!--
      --><div class="boutons">
             <ul>
-                 <li><a href="utilisateurs.py?action=deconnexion" title="Déconnexion">Déconnexion</a>
-                 <li><a href="utilisateurs.py?action=aide" title="Documentation">Aide</a>
+                 <li><a href="conf.py?action=deconnexion" title="Déconnexion">Déconnexion</a>
+                 <li><a href="conf.py?action=aide" title="Documentation">Aide</a>
             </ul>
         </div> 
     </header>
@@ -45,3 +45,24 @@ def printFooter():
     </body>
     </html>
     '''
+ 
+def printUtilisateur(row):
+    print '<tr><td>' + str(row[1]) + '</td><td>' + str(row[2]) + '</td><td>' + str(row[3]) \
+        + '</td><td>' + str(row[4]) + '</td>'
+    if row[4] != 1:
+        print '<td><a href="utilisateurs.py?action=supprimer&amp;id=' \
+            + str(row[0]) + '">Supprimer</a>'
+    print "</td><td>" \
+        + '<a href ="conf.py?action=modifier&amp;id=' + str(row[0]) \
+        + '">Modifier</a></td></tr>'
+        
+def printUtilisateurs():
+    selectUtilisateur()
+    print '<h2>Liste des utilisateurs</h2>'
+    print("<table>")
+    print ('<thead><tr><th>Nom</th> <th> Prénom</th> <th> Email</th> <th> Admin</th> <th>'
+    + 'Suppression</th>  <th> Modification</th></tr></thead><tbody>')
+    for row in cursor.fetchall():
+        printUtilisateur(row)
+    print("</tbody></table>")
+    
