@@ -1,7 +1,7 @@
 #!C:/python27/python.exe
 # -*- coding: utf-8 -*-
 
-import sys, os
+import html, mail, bdd, admin, sys, os
 import session
 import MySQLdb
 import cgi
@@ -15,14 +15,21 @@ db = MySQLdb.connect("localhost", "toto", "", "utilisateurs")
 form = cgi.FieldStorage()
 action = form.getvalue('action')
 
-if action in locals(): #Si la variable action est présente (non vide)
-    action()
-
-def action():
+def actionTraitement():
     if action == 'connexion':
         connexion()
-    if action == 'deconnexion':
+    elif action == 'deconnexion':
         deconnexion()
+    elif action == 'inscription' or action == 'envoieMdp':
+        mail.sendMail(action)
+    elif action == 'modifMdp':
+        bdd.updateMdpModif(sess.data['id'], form.getvalue('mdpApr'))
+    elif action == 'modifEmail':
+        bdd.updateEmailModif(sess.data['id'], form.getvalue('emailApr'))
+    elif action == 'enregistrerModification' or action == 'ajouter':
+        bdd.addUtilisateur(action)
+    elif action == 'supprimer':
+        bdd.deleteUtilisateur(form.getvalue('id'))
 
 def deconnexion():
     sess.data['connecte'] = False
@@ -36,7 +43,7 @@ def connexion():
     if (email == None or mdp == None):
         print('Location:connexion.py')
     else:
-        sql = "SELECT admin FROM utilisateur WHERE email = '" + email + "' AND mdp = '" + mdp + "';"
+        sql = "SELECT admin, id FROM utilisateur WHERE email = '" + email + "' AND mdp = '" + mdp + "';"
         
         cursor = db.cursor()
         cursor.execute(sql)
@@ -44,7 +51,10 @@ def connexion():
         if row is not None:
             sess.data['connecte'] = True
             sess.data['admin'] = row[0]
+            sess.data['id'] = rox[1]
             redirect()
+        else:
+            print('Location:connexion.py')     
                 
 def redirect():
     connecte = sess.data.get('connecte')
@@ -56,6 +66,11 @@ def redirect():
         print('Location:utilisateur.py')
     else:
         print('Location:connexion.py')
-        
+
+if action is not None:
+    actionTraitement()
+ 
+html.printHead()
+   
 db.close()
 sess.close()
